@@ -11,7 +11,7 @@ class PHP extends AFilter implements IFilter
 	{
 		$data = [];
 		$matches = [];
-		preg_match_all('~[\'\"][a-z0-9_]+\.[a-z0-9_]+\.[a-z0-9_]+(\.[a-z0-9_]+)?[\'\"]~', $string, $matches);
+		preg_match_all('~[\'\"][a-z0-9_]+\.[a-z0-9_]+\.[a-z0-9_]+(\.[a-z0-9_]+){0,4}[\'\"]~', $string, $matches);
 
 		if (isset($matches[0])) {
 			foreach ($matches[0] as $match) {
