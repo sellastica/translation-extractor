@@ -12,21 +12,9 @@ class Extractor
 	protected $data = [];
 	/** @var array */
 	private $dirs = [];
-	/** @var array */
-	private $databaseTables = [];
 	/** @var array|null */
 	private $lastScan;
-	/** @var \Dibi\Connection */
-	private $database;
 
-
-	/**
-	 * @param \Dibi\Connection $database
-	 */
-	public function __construct(\Dibi\Connection $database)
-	{
-		$this->database = $database;
-	}
 
 	/**
 	 * @param string $path
@@ -35,17 +23,6 @@ class Extractor
 	public function addDir(string $path): Extractor
 	{
 		$this->dirs[] = $path;
-		return $this;
-	}
-
-	/**
-	 * @param string $table
-	 * @param string $column
-	 * @return Extractor
-	 */
-	public function addDatabaseTable(string $table, string $column): Extractor
-	{
-		$this->databaseTables[] = [$table, $column];
 		return $this;
 	}
 
@@ -73,17 +50,6 @@ class Extractor
 				/** @var \SplFileInfo $file */
 				$messagesCount += $this->extract($file->getExtension(), file_get_contents($file->getRealPath()));
 				$filesCount++;
-			}
-		}
-
-		//database tables
-		foreach ($this->databaseTables as $tableData) {
-			list($table, $column) = $tableData;
-			$result = $this->database->select($column)->from($table)->fetchPairs();
-			if (is_array($result)) {
-				foreach ($result as $string) {
-					$messagesCount += $this->extract('twig', (string)$string);
-				}
 			}
 		}
 
